@@ -1,0 +1,27 @@
+# Stage 1: Build the application
+FROM python:3.9-slim as builder
+
+WORKDIR /app
+
+# Copy your Python application code and requirements file into the container
+COPY app.py /app
+COPY requirements.txt /app
+
+# Install the required packages
+RUN pip install -r requirements.txt
+
+# Stage 2: Create the final image
+FROM python:3.9-slim
+
+# Copy the application and installed packages from the builder stage
+COPY --from=builder /app /app
+
+# Set the working directory for the final image
+WORKDIR /app
+
+# Expose the port the Flask app will run on
+EXPOSE 5000
+
+# Run the Python Flask application
+CMD ["python3", "app.py"]
+
